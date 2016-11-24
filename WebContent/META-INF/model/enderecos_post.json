@@ -1,0 +1,15 @@
+{
+  "enderecos": [
+    {
+      "logradouro": null,
+      "numero": null,
+      "complemento": null,
+      "bairro": null,
+      "cidade": null,
+      "estado": null,
+      "pais": null,
+      "cep": null,
+      "tipoEndereco": null
+    }
+  ]
+}

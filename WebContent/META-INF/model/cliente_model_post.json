@@ -1,0 +1,42 @@
+{
+  "tipo": null,
+  "login": {
+    "usuario": null,
+    "senha": null
+  },
+  "nome": null,
+  "cpf": null,
+  "rg": null,
+  "nomeFantasia": null,
+  "razaoSocial": null,
+  "cnpj": null,
+  "ie": null,
+  "im": null,
+  "enderecos": [
+  	{
+	"logradouro": null,
+	"numero": null,
+	"complemento": null,
+	"bairro": null,
+	"cidade": null,
+	"estado": null,
+	"pais": null,
+	"cep": null,
+	"tipoEndereco": null
+  	}
+  ],
+  "emails": [
+    {
+      "email": null,
+      "tipoEmail": null
+    }
+  ],
+  "telefones": [
+    {
+      "ddi": null,
+      "ddd": null,
+      "numero": null,
+      "tipoTelefone": null
+    }
+  ]
+}
