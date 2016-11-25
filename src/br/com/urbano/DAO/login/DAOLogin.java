@@ -17,7 +17,7 @@ import com.auth0.jwt.JWTSigner;
 import com.auth0.jwt.JWTVerifier;
 
 import br.com.urbano.exceptions.ConflictException;
-import br.com.urbano.exceptions.DataNotFoundException;
+import br.com.urbano.exceptions.EmptyException;
 import br.com.urbano.exceptions.SessionEndException;
 import br.com.urbano.exceptions.UnauthorizedException;
 import br.com.urbano.exceptions.UserAlreadyExistsException;
@@ -97,7 +97,7 @@ public class DAOLogin {
 	 * @param usuario
 	 * @return
 	 * @throws UserAlreadyExistsException
-	 * @throws DataNotFoundException
+	 * @throws EmptyException
 	 * @throws Exception
 	 */
 	public Long PesquisarUsuario(String usuario) {

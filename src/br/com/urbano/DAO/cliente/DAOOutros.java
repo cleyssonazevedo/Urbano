@@ -9,7 +9,7 @@ import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.urbano.exceptions.DataNotFoundException;
+import br.com.urbano.exceptions.EmptyException;
 import br.com.urbano.modelo.cliente.Cliente;
 import br.com.urbano.modelo.cliente.outros.Email;
 import br.com.urbano.modelo.cliente.outros.Endereco;
@@ -68,22 +68,25 @@ public class DAOOutros {
 	}
 
 	/**
+	 * Buscar somente um Endereco
 	 * 
 	 * @param id_cliente
 	 * @param id_endereco
 	 * @return
-	 * @throws DataNotFoundException
+	 * @throws EmptyException
 	 */
-	public Endereco Endereco(long id_cliente, long id_endereco) throws DataNotFoundException {
+	public Endereco Endereco(long id_cliente, long id_endereco) throws EmptyException {
 		try {
 			TypedQuery<Endereco> query = manager.createQuery(
 					"SELECT e FROM Endereco e WHERE id_cliente = :id_cliente AND id = :id", Endereco.class);
 			query.setParameter("id", id_endereco);
 			query.setParameter("id_cliente", id_cliente);
-			return query.getSingleResult();
+			Endereco endereco = query.getSingleResult();
+			endereco.setCliente(null);
+			return endereco;
 		} catch (Exception e) {
 			// TODO: handle exception
-			throw new DataNotFoundException("Endereço não encontrado no seu cadastro!");
+			throw new EmptyException("Endereço não encontrado no seu cadastro!");
 		}
 	}
 
@@ -129,16 +132,19 @@ public class DAOOutros {
 		}
 	}
 
-	public Email Email(long id_cliente, long id_email) throws DataNotFoundException {
+	public Email Email(long id_cliente, long id_email) throws EmptyException {
 		try {
 			TypedQuery<Email> query = manager
 					.createQuery("SELECT e FROM Email e WHERE id_cliente = :id_cliente AND id = :id", Email.class);
 			query.setParameter("id", id_email);
 			query.setParameter("id_cliente", id_cliente);
-			return query.getSingleResult();
+			Email email = query.getSingleResult();
+			email.setCliente(null);
+
+			return email;
 		} catch (Exception e) {
 			// TODO: handle exception
-			throw new DataNotFoundException("Email não encontrado no seu cadastro!");
+			throw new EmptyException("Email não encontrado no seu cadastro!");
 		}
 	}
 
@@ -184,16 +190,19 @@ public class DAOOutros {
 		}
 	}
 
-	public Telefone Telefone(long id_cliente, long id_telefone) throws DataNotFoundException{
+	public Telefone Telefone(long id_cliente, long id_telefone) throws EmptyException {
 		try {
 			TypedQuery<Telefone> query = manager.createQuery(
 					"SELECT e FROM Telefone e WHERE id_cliente = :id_cliente AND id = :id", Telefone.class);
 			query.setParameter("id", id_telefone);
 			query.setParameter("id_cliente", id_cliente);
-			return query.getSingleResult();
+			Telefone telefone = query.getSingleResult();
+			telefone.setCliente(null);
+
+			return telefone;
 		} catch (Exception e) {
 			// TODO: handle exception
-			throw new DataNotFoundException("Telefone não encontrado com o seu cadastro!");
+			throw new EmptyException("Telefone não encontrado com o seu cadastro!");
 		}
 	}
 }

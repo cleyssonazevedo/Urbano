@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import br.com.urbano.controller.veiculo.ENUM.TiposFiltro;
 import br.com.urbano.controller.veiculo.RETURN.Veiculos;
 import br.com.urbano.controller.veiculo.apoio.Filtro;
+import br.com.urbano.exceptions.EmptyException;
 import br.com.urbano.modelo.veiculo.Carro;
 import br.com.urbano.modelo.veiculo.Moto;
 import br.com.urbano.modelo.veiculo.Veiculo;
@@ -40,8 +41,6 @@ public class DAOVeiculo {
 			else
 				veiculos.setCarros(null);
 		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
 			veiculos.setCarros(null);
 		}
 
@@ -62,15 +61,13 @@ public class DAOVeiculo {
 			else
 				veiculos.setMotos(null);
 		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
 			veiculos.setMotos(null);
 		}
 
 		return veiculos;
 	}
 
-	public Veiculos Listar(Filtro filtro) throws Exception {
+	public Veiculos Listar(Filtro filtro) {
 
 		Veiculos veiculos = new Veiculos();
 		try {
@@ -90,8 +87,6 @@ public class DAOVeiculo {
 			else
 				veiculos.setCarros(null);
 		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
 			veiculos.setCarros(null);
 		}
 
@@ -114,13 +109,23 @@ public class DAOVeiculo {
 				else
 					veiculos.setMotos(null);
 			} catch (Exception e) {
-				// TODO: handle exception
-				e.printStackTrace();
 				veiculos.setMotos(null);
 			}
 		} else
 			veiculos.setMotos(null);
 
 		return veiculos;
+	}
+
+	public Veiculo Buscar(long id_veiculo) throws EmptyException {
+		try {
+			TypedQuery<Veiculo> query = manager.createQuery("SELECT v FROM Veiculo v WHERE ID = :id", Veiculo.class);
+			query.setParameter("id", id_veiculo);
+			
+			return query.getSingleResult();
+		} catch (Exception e) {
+			// TODO: handle exception
+			throw new EmptyException(e);
+		}
 	}
 }

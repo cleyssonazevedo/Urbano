@@ -58,9 +58,9 @@ CREATE TABLE Login (
 ) ENGINE=InnoDB;
     
 CREATE TABLE Reservar (
-	id bigint NOT NULL AUTO_INCREMENT,
-	dataRegistro datetime NOT NULL,
-	dataReserva date NOT NULL,
+	id BIGINT NOT NULL AUTO_INCREMENT,
+	dataRegistro DATETIME NOT NULL,
+	dataReserva DATETIME NOT NULL,
 	id_cliente INT UNSIGNED NOT NULL,
 	id_veiculo bigint NOT NULL,
 	PRIMARY KEY (id)

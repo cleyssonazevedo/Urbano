@@ -18,18 +18,16 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.urbano.DAO.cliente.DAOCliente;
 import br.com.urbano.DAO.cliente.DAOOutros;
 import br.com.urbano.DAO.login.DAOLogin;
+import br.com.urbano.controller.Constants;
 import br.com.urbano.controller.cliente.apoio.ValidarApoio;
 import br.com.urbano.controller.cliente.apoio.outros.Enderecos;
-import br.com.urbano.exceptions.DataNotFoundException;
+import br.com.urbano.exceptions.EmptyException;
 import br.com.urbano.exceptions.UnauthorizedException;
-import br.com.urbano.modelo.Message;
 import br.com.urbano.modelo.cliente.Cliente;
 import br.com.urbano.modelo.cliente.outros.Endereco;
 
 @RestController
 public class EnderecoController {
-	private static final String URL = "/cliente/enderecos";
-
 	@Autowired
 	private DAOOutros outrosDAO;
 
@@ -46,7 +44,7 @@ public class EnderecoController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = URL, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = Constants.ENDERECO, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseEntity<Object> Exibir(@CookieValue(name = "token", required = true) String cookien,
 			HttpServletRequest request) {
 		long id_login;
@@ -56,15 +54,44 @@ public class EnderecoController {
 			id_login = loginDAO.ChecarCookieCompleta(cookie);
 		} catch (NullPointerException e) {
 			// TODO: handle exception
-			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new Message(e.getMessage()));
+			return new ResponseEntity<>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
 		} catch (UnauthorizedException e) {
 			// TODO Auto-generated catch block
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Message(e.getMessage()));
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
 		try {
 			Cliente cliente = (Cliente) clienteDAO.Exibir(id_login);
 			return ResponseEntity.status(HttpStatus.OK).body(new Enderecos(outrosDAO.Enderecos(cliente.getId())));
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@RequestMapping(value = Constants.ENDERECO_GET, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	private ResponseEntity<Endereco> Exibir(@CookieValue(name = "token", required = true) String cookien,
+			HttpServletRequest request, @PathVariable(value = Constants.PATH_VARIABLE) long id_endereco) {
+		long id_login;
+		// Operações com o cookie
+		try {
+			Cookie cookie = request.getCookies()[request.getCookies().length - 1];
+			id_login = loginDAO.ChecarCookieCompleta(cookie);
+		} catch (NullPointerException e) {
+			// TODO: handle exception
+			return new ResponseEntity<>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
+		} catch (UnauthorizedException e) {
+			// TODO Auto-generated catch block
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+
+		try {
+			Cliente cliente = (Cliente) clienteDAO.Exibir(id_login);
+			return ResponseEntity.status(HttpStatus.OK).body(outrosDAO.Endereco(cliente.getId(), id_endereco));
+		} catch (EmptyException e) {
+			// TODO: handle exception
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -81,7 +108,7 @@ public class EnderecoController {
 	 * @param enderecos
 	 * @return
 	 */
-	@RequestMapping(value = URL, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = Constants.ENDERECO, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseEntity<Object> Inserir(@CookieValue(name = "token", required = true) String cookien,
 			HttpServletRequest request, HttpServletResponse response, @RequestBody Enderecos enderecos) {
 		long id_login;
@@ -91,10 +118,10 @@ public class EnderecoController {
 			id_login = loginDAO.ChecarCookieCompleta(cookie);
 		} catch (NullPointerException e) {
 			// TODO: handle exception
-			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new Message(e.getMessage()));
+			return new ResponseEntity<>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
 		} catch (UnauthorizedException e) {
 			// TODO Auto-generated catch block
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Message(e.getMessage()));
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
 		try {
@@ -104,7 +131,7 @@ public class EnderecoController {
 			else {
 				outrosDAO.InserirEndereco(enderecos.getEnderecos(), cliente);
 
-				response.sendRedirect(request.getContextPath() + URL);
+				response.sendRedirect(request.getContextPath() + Constants.ENDERECO);
 				return ResponseEntity.status(HttpStatus.CREATED).body(null);
 			}
 		} catch (Exception e) {
@@ -113,9 +140,10 @@ public class EnderecoController {
 		}
 	}
 
-	@RequestMapping(value = URL + "/{id}", method = RequestMethod.DELETE)
+	@RequestMapping(value = Constants.ENDERECO_DELETE, method = RequestMethod.DELETE)
 	private ResponseEntity<Object> Excluir(@CookieValue(name = "token", required = true) String cookien,
-			HttpServletRequest request, HttpServletResponse response, @PathVariable(value = "id") long id_endereco) {
+			HttpServletRequest request, HttpServletResponse response,
+			@PathVariable(value = Constants.PATH_VARIABLE) long id_endereco) {
 		long id_login;
 		// Operações com o cookie
 		try {
@@ -123,10 +151,10 @@ public class EnderecoController {
 			id_login = loginDAO.ChecarCookieCompleta(cookie);
 		} catch (NullPointerException e) {
 			// TODO: handle exception
-			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new Message(e.getMessage()));
+			return new ResponseEntity<>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
 		} catch (UnauthorizedException e) {
 			// TODO Auto-generated catch block
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Message(e.getMessage()));
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
 		try {
@@ -138,10 +166,9 @@ public class EnderecoController {
 
 				return ResponseEntity.status(HttpStatus.OK).body(null);
 			} else
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-						new Message("Tem que ter no mínimo um Endereço, cadastre outro antes de excluir um Endereço!"));
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-		} catch (DataNotFoundException e) {
+		} catch (EmptyException e) {
 			// TODO: handle exception
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		} catch (Exception e) {

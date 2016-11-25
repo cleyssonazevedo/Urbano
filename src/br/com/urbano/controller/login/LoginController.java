@@ -16,27 +16,27 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.urbano.DAO.login.DAOLogin;
+import br.com.urbano.controller.Constants;
 import br.com.urbano.exceptions.ConflictException;
 import br.com.urbano.exceptions.UnauthorizedException;
-import br.com.urbano.modelo.Message;
 import br.com.urbano.modelo.login.Login;
 
 @RestController
 public class LoginController {
-	private static final String URL = "/login";
 	@Autowired
 	private DAOLogin loginDAO;
 
 	@ModelAttribute
-	@RequestMapping(value = URL, method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	private ResponseEntity<Object> Logon(@RequestBody Login login,
+	@RequestMapping(value = Constants.LOGIN, method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	private ResponseEntity<Void> Logon(@RequestBody Login login,
 			@CookieValue(name = "token", required = false) String cookien, HttpServletRequest request,
 			HttpServletResponse response) {
+
 		// Checar Login válido
 		try {
 			login = loginDAO.Logon(login);
 		} catch (UnauthorizedException e) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Message(e.getMessage()));
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
 		// Apagar cookies antigos, caso tenha
@@ -54,18 +54,18 @@ public class LoginController {
 			Cookie cookie = loginDAO.GerarCookie(login);
 
 			response.addCookie(cookie);
-			response.sendRedirect(request.getContextPath() + "/cliente");
+			response.sendRedirect(request.getContextPath() + Constants.CLIENTE);
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println("Erro ao gerar Cookie");
 			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("Erro ao gerar Cooki]!"));
+			return new ResponseEntity<>(HttpStatus.PRECONDITION_REQUIRED);
 		}
 
 		return ResponseEntity.status(HttpStatus.OK).body(null);
 	}
 
-	@RequestMapping(value = URL, method = RequestMethod.OPTIONS)
+	@RequestMapping(value = Constants.LOGIN, method = RequestMethod.OPTIONS)
 	private ResponseEntity<Void> Logout(HttpServletResponse response, HttpServletRequest request) {
 		try {
 			for (Cookie cookie : request.getCookies()) {
@@ -79,7 +79,7 @@ public class LoginController {
 		return ResponseEntity.ok().body(null);
 	}
 
-	@RequestMapping(value = URL, method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = Constants.LOGIN, method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseEntity<Void> ExcluirConta(@RequestBody Login login, HttpServletRequest request,
 			HttpServletResponse response) {
 		try {
@@ -110,9 +110,8 @@ public class LoginController {
 		}
 	}
 
-	@RequestMapping(value = URL, method = { RequestMethod.PUT,
-			RequestMethod.GET }, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	private ResponseEntity<Object> Alterar(@RequestBody Login login,
+	@RequestMapping(value = Constants.LOGIN, method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	private ResponseEntity<Void> Alterar(@RequestBody Login login,
 			@CookieValue(value = "token", required = true, defaultValue = "null") String cookien,
 			HttpServletResponse response, HttpServletRequest request) {
 
@@ -123,10 +122,10 @@ public class LoginController {
 			id_login = loginDAO.ChecarCookieCompleta(cookie);
 		} catch (NullPointerException e) {
 			// TODO: handle exception
-			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new Message(e.getMessage()));
+			return new ResponseEntity<>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
 		} catch (UnauthorizedException e) {
 			// TODO Auto-generated catch block
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Message(e.getMessage()));
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
 		// Validar e Alterar

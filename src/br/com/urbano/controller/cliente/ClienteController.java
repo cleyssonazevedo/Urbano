@@ -19,19 +19,17 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.urbano.DAO.cliente.DAOCliente;
 import br.com.urbano.DAO.cliente.DAOOutros;
 import br.com.urbano.DAO.login.DAOLogin;
+import br.com.urbano.controller.Constants;
 import br.com.urbano.controller.cliente.apoio.ApoioCliente;
 import br.com.urbano.controller.cliente.apoio.TipoCliente;
 import br.com.urbano.controller.cliente.apoio.ValidarApoio;
 import br.com.urbano.exceptions.ConflictException;
 import br.com.urbano.exceptions.UnauthorizedException;
-import br.com.urbano.modelo.Message;
 import br.com.urbano.modelo.cliente.Fisico;
 import br.com.urbano.modelo.cliente.Juridico;
 
 @RestController
 public class ClienteController {
-	private static final String URL = "/cliente";
-
 	@Autowired
 	private DAOCliente clienteDAO;
 
@@ -44,7 +42,7 @@ public class ClienteController {
 	private Fisico fisico;
 	private Juridico juridico;
 
-	@RequestMapping(value = URL, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = Constants.CLIENTE, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseEntity<Object> Exibir(HttpServletRequest request, HttpServletResponse response,
 			@CookieValue(name = "token", required = true, defaultValue = "null") String cookien) {
 		long id_login;
@@ -54,10 +52,10 @@ public class ClienteController {
 			id_login = loginDAO.ChecarCookieCompleta(cookie);
 		} catch (NullPointerException e) {
 			// TODO: handle exception
-			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new Message(e.getMessage()));
+			return new ResponseEntity<>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
 		} catch (UnauthorizedException e) {
 			// TODO Auto-generated catch block
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Message(e.getMessage()));
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
 		// Operações de requisição dos dados do cliente
@@ -83,17 +81,15 @@ public class ClienteController {
 
 			return ResponseEntity.ok().body(cliente);
 		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Message(e.getMessage()));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		} finally {
 			fisico = null;
 			juridico = null;
 		}
 	}
 
-	@RequestMapping(value = URL, method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	private ResponseEntity<Object> Inserir(@RequestBody ApoioCliente cliente,
+	@RequestMapping(value = Constants.CLIENTE, method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	private ResponseEntity<Void> Inserir(@RequestBody ApoioCliente cliente,
 			@CookieValue(name = "token", required = false) String cookien, HttpServletRequest request,
 			HttpServletResponse response) {
 		try {
@@ -113,16 +109,16 @@ public class ClienteController {
 								outrosDAO.InserirTelefone(cliente.getTelefones(), fisico);
 								outrosDAO.InserirEmail(cliente.getEmails(), fisico);
 
-								URI location = new URI("/cliente/" + fisico.getId());
-								
+								URI location = new URI(Constants.CLIENTE + fisico.getId());
+
 								Cookie cookie = loginDAO.GerarCookie(fisico.getLogin());
 								response.addCookie(cookie);
-								response.sendRedirect(request.getContextPath() + URL);
+								response.sendRedirect(request.getContextPath() + Constants.CLIENTE);
 								return ResponseEntity.created(location).body(null);
 							} else
 								throw new ConflictException();
 						} else
-							return ResponseEntity.status(HttpStatus.CONFLICT).body(new Message("Usuário já existe!"));
+							return new ResponseEntity<>(HttpStatus.CONFLICT);
 					} catch (ConflictException e) {
 						// TODO: handle exception
 						return new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -150,16 +146,16 @@ public class ClienteController {
 								outrosDAO.InserirTelefone(cliente.getTelefones(), juridico);
 								outrosDAO.InserirEmail(cliente.getEmails(), juridico);
 
-								URI location = new URI("/cliente/" + juridico.getId());
-								
+								URI location = new URI(Constants.CLIENTE + juridico.getId());
+
 								Cookie cookie = loginDAO.GerarCookie(juridico.getLogin());
 								response.addCookie(cookie);
-								response.sendRedirect(request.getContextPath() + URL);
+								response.sendRedirect(request.getContextPath() + Constants.CLIENTE);
 								return ResponseEntity.created(location).body(null);
 							} else
 								throw new ConflictException();
 						} else
-							return ResponseEntity.status(HttpStatus.CONFLICT).body(new Message("Usuário já existe!"));
+							return new ResponseEntity<>(HttpStatus.CONFLICT);
 					} catch (ConflictException e) {
 						// TODO: handle exception
 						return new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -169,7 +165,7 @@ public class ClienteController {
 						return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 					}
 				} else {
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("Tipo de Cliente Inválido"));
+					return new ResponseEntity<>(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
 				}
 			} else
 				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -180,5 +176,4 @@ public class ClienteController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
-
 }

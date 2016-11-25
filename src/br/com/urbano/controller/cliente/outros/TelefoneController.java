@@ -18,17 +18,15 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.urbano.DAO.cliente.DAOCliente;
 import br.com.urbano.DAO.cliente.DAOOutros;
 import br.com.urbano.DAO.login.DAOLogin;
+import br.com.urbano.controller.Constants;
 import br.com.urbano.controller.cliente.apoio.outros.Telefones;
-import br.com.urbano.exceptions.DataNotFoundException;
+import br.com.urbano.exceptions.EmptyException;
 import br.com.urbano.exceptions.UnauthorizedException;
-import br.com.urbano.modelo.Message;
 import br.com.urbano.modelo.cliente.Cliente;
 import br.com.urbano.modelo.cliente.outros.Telefone;
 
 @RestController
 public class TelefoneController {
-	private static final String URL = "/cliente/telefones";
-
 	@Autowired
 	private DAOOutros outrosDAO;
 
@@ -45,7 +43,7 @@ public class TelefoneController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = URL, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = Constants.TELEFONE, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseEntity<Object> Exibir(@CookieValue(name = "token", required = true) String cookien,
 			HttpServletRequest request) {
 		long id_login;
@@ -55,15 +53,44 @@ public class TelefoneController {
 			id_login = loginDAO.ChecarCookieCompleta(cookie);
 		} catch (NullPointerException e) {
 			// TODO: handle exception
-			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new Message(e.getMessage()));
+			return new ResponseEntity<>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
 		} catch (UnauthorizedException e) {
 			// TODO Auto-generated catch block
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Message(e.getMessage()));
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
 		try {
 			Cliente cliente = (Cliente) clienteDAO.Exibir(id_login);
 			return ResponseEntity.status(HttpStatus.OK).body(new Telefones(outrosDAO.Telefones(cliente.getId())));
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@RequestMapping(value = Constants.TELEFONE_GET, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	private ResponseEntity<Telefone> Exibir(@CookieValue(name = "token", required = true) String cookien,
+			HttpServletRequest request, @PathVariable(value = Constants.PATH_VARIABLE) long id_telefone) {
+		long id_login;
+		// Operações com o cookie
+		try {
+			Cookie cookie = request.getCookies()[request.getCookies().length - 1];
+			id_login = loginDAO.ChecarCookieCompleta(cookie);
+		} catch (NullPointerException e) {
+			// TODO: handle exception
+			return new ResponseEntity<>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
+		} catch (UnauthorizedException e) {
+			// TODO Auto-generated catch block
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+
+		try {
+			Cliente cliente = (Cliente) clienteDAO.Exibir(id_login);
+			return ResponseEntity.status(HttpStatus.OK).body(outrosDAO.Telefone(cliente.getId(), id_telefone));
+		} catch (EmptyException e) {
+			// TODO: handle exception
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -80,7 +107,7 @@ public class TelefoneController {
 	 * @param enderecos
 	 * @return
 	 */
-	@RequestMapping(value = URL, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = Constants.TELEFONE, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseEntity<Object> Inserir(@CookieValue(name = "token", required = true) String cookien,
 			HttpServletRequest request, HttpServletResponse response, @RequestBody Telefones telefones) {
 		long id_login;
@@ -90,17 +117,17 @@ public class TelefoneController {
 			id_login = loginDAO.ChecarCookieCompleta(cookie);
 		} catch (NullPointerException e) {
 			// TODO: handle exception
-			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new Message(e.getMessage()));
+			return new ResponseEntity<>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
 		} catch (UnauthorizedException e) {
 			// TODO Auto-generated catch block
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Message(e.getMessage()));
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
 		try {
 			Cliente cliente = (Cliente) clienteDAO.Exibir(id_login);
 			outrosDAO.InserirTelefone(telefones.getTelefones(), cliente);
 
-			response.sendRedirect(request.getContextPath() + URL);
+			response.sendRedirect(request.getContextPath() + Constants.TELEFONE);
 			return ResponseEntity.status(HttpStatus.CREATED).body(null);
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -108,9 +135,10 @@ public class TelefoneController {
 		}
 	}
 
-	@RequestMapping(value = URL + "/{id}", method = RequestMethod.DELETE)
+	@RequestMapping(value = Constants.TELEFONE_DELETE, method = RequestMethod.DELETE)
 	private ResponseEntity<Object> Excluir(@CookieValue(name = "token", required = true) String cookien,
-			HttpServletRequest request, HttpServletResponse response, @PathVariable(value = "id") long id_telefone) {
+			HttpServletRequest request, HttpServletResponse response,
+			@PathVariable(value = Constants.PATH_VARIABLE) long id_telefone) {
 		long id_login;
 		// Operações com o cookie
 		try {
@@ -118,10 +146,10 @@ public class TelefoneController {
 			id_login = loginDAO.ChecarCookieCompleta(cookie);
 		} catch (NullPointerException e) {
 			// TODO: handle exception
-			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new Message(e.getMessage()));
+			return new ResponseEntity<>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
 		} catch (UnauthorizedException e) {
 			// TODO Auto-generated catch block
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Message(e.getMessage()));
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
 		try {
@@ -131,7 +159,7 @@ public class TelefoneController {
 			outrosDAO.ExcluirTelefone(telefone.getId());
 
 			return ResponseEntity.status(HttpStatus.OK).body(null);
-		} catch (DataNotFoundException e) {
+		} catch (EmptyException e) {
 			// TODO: handle exception
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		} catch (Exception e) {
