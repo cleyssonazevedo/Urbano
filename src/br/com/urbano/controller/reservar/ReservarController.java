@@ -50,7 +50,7 @@ public class ReservarController {
 	private DAOVeiculo veiculoDAO;
 
 	@RequestMapping(value = Constants.RESERVA, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	private ResponseEntity<Object> ListarTodos(
+	private ResponseEntity<SendReservas> ListarTodos(
 			@CookieValue(name = "token", required = true, defaultValue = "null") String cookien,
 			HttpServletRequest request) {
 		long id_login;
@@ -121,7 +121,12 @@ public class ReservarController {
 		try {
 			Cookie cookie = request.getCookies()[request.getCookies().length - 1];
 			id_login = loginDAO.ChecarCookieCompleta(cookie);
-		} catch (Exception e) {
+		} catch (NullPointerException e) {
+			// TODO: Cookie não encontrado na máquina, mande relogar ou ativar
+			// os cookies
+			return new ResponseEntity<>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
+		} catch (UnauthorizedException e) {
+			// TODO Tempo de login já encerrado
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
@@ -131,19 +136,18 @@ public class ReservarController {
 				reservarDAO.inserir(reservar);
 
 				response.sendRedirect(request.getContextPath() + Constants.RESERVA);
-				return ResponseEntity.status(HttpStatus.OK).body(null);
+				return ResponseEntity.status(HttpStatus.CREATED).body(null);
 			} else
+				// Caso queira reservar um carro já reservado
 				return new ResponseEntity<>(HttpStatus.CONFLICT);
 		} catch (ConflictException e) {
-			// TODO: handle exception
-			e.printStackTrace();
+			// TODO: Caso queira Inserir uma Data Menor que hoje
 			return new ResponseEntity<>(HttpStatus.LOCKED);
 		} catch (EmptyException e) {
-			// TODO: handle exception
+			// TODO: Caso o ID do carro não esteja no banco
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
-			// TODO Tentando Inserir uma reserva já feita, ele vai dar erro
-			e.printStackTrace();
+			// TODO Erros de execução
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}

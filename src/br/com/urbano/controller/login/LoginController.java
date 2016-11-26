@@ -27,7 +27,7 @@ public class LoginController {
 	private DAOLogin loginDAO;
 
 	@ModelAttribute
-	@RequestMapping(value = Constants.LOGIN, method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = Constants.LOGIN, method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseEntity<Void> Logon(@RequestBody Login login,
 			@CookieValue(name = "token", required = false) String cookien, HttpServletRequest request,
 			HttpServletResponse response) {
@@ -56,9 +56,7 @@ public class LoginController {
 			response.addCookie(cookie);
 			response.sendRedirect(request.getContextPath() + Constants.CLIENTE);
 		} catch (Exception e) {
-			// TODO: handle exception
-			System.out.println("Erro ao gerar Cookie");
-			e.printStackTrace();
+			// TODO: Erro ao gerar o cookie
 			return new ResponseEntity<>(HttpStatus.PRECONDITION_REQUIRED);
 		}
 
@@ -105,7 +103,6 @@ public class LoginController {
 			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

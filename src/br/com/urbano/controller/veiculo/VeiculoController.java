@@ -39,10 +39,14 @@ public class VeiculoController {
 	}
 
 	@RequestMapping(value = Constants.VEICULO, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	private ResponseEntity<Object> ExibirComFiltro(HttpServletRequest request, HttpServletResponse response,
+	private ResponseEntity<Veiculos> ExibirComFiltro(HttpServletRequest request, HttpServletResponse response,
 			@RequestBody Filtro filtro) {
 		try {
-			return ResponseEntity.ok().body(veiculoDAO.Listar(filtro));
+			Veiculos veiculos = veiculoDAO.Listar(filtro);
+			if (veiculos.getCarros() != null && veiculos.getMotos() != null)
+				return ResponseEntity.ok().body(veiculos);
+			else
+				throw new Exception("Nenhum veículo encontrado no sistema!");
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}

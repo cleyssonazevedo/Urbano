@@ -187,7 +187,7 @@ public class DAOLogin {
 			JWTSigner signer = new JWTSigner(SECRET);
 			HashMap<String, Object> claims = new HashMap<>();
 			long iat = System.currentTimeMillis() / 1000;
-			long exp = iat + 50;
+			long exp = iat + 21600;
 
 			// Informações no token
 			claims.put("iss", ISSUER);
@@ -203,7 +203,7 @@ public class DAOLogin {
 			cookie.setComment("Login da concessionária Urbano");
 			// cookie.setDomain("urbano");
 			cookie.setSecure(false);
-			cookie.setMaxAge(6000);
+			cookie.setMaxAge(43200);
 
 			return cookie;
 		} catch (Exception e) {

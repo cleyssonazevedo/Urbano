@@ -28,7 +28,7 @@ public class DAOReservar {
 	@Transactional
 	public Reservar inserir(Reservar reservar) throws ConflictException, Exception {
 		try {
-			if (reservar.getDataRegistro().before(reservar.getDataReserva())) {
+			if(reservar.getDataRegistro().before(reservar.getDataReserva())){
 				manager.persist(reservar);
 				return reservar;
 			} else
