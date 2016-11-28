@@ -17,7 +17,7 @@ public class SendReservar {
 
 	public SendReservar(Reservar reservar) {
 		// TODO Auto-generated constructor stub
-		SimpleDateFormat formatData = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		SimpleDateFormat formatData = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
 		this.id = reservar.getId();
 		this.veiculo = reservar.getVeiculo();

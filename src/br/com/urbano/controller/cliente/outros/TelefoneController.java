@@ -44,7 +44,7 @@ public class TelefoneController {
 	 * @return
 	 */
 	@RequestMapping(value = Constants.TELEFONE, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	private ResponseEntity<Object> Exibir(@CookieValue(name = "token", required = true) String cookien,
+	private ResponseEntity<Telefones> Exibir(@CookieValue(name = "token", required = true) String cookien,
 			HttpServletRequest request) {
 		long id_login;
 		// Operações com o cookie
@@ -108,7 +108,7 @@ public class TelefoneController {
 	 * @return
 	 */
 	@RequestMapping(value = Constants.TELEFONE, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	private ResponseEntity<Object> Inserir(@CookieValue(name = "token", required = true) String cookien,
+	private ResponseEntity<Void> Inserir(@CookieValue(name = "token", required = true) String cookien,
 			HttpServletRequest request, HttpServletResponse response, @RequestBody Telefones telefones) {
 		long id_login;
 		// Operações com o cookie
@@ -136,7 +136,7 @@ public class TelefoneController {
 	}
 
 	@RequestMapping(value = Constants.TELEFONE_DELETE, method = RequestMethod.DELETE)
-	private ResponseEntity<Object> Excluir(@CookieValue(name = "token", required = true) String cookien,
+	private ResponseEntity<Void> Excluir(@CookieValue(name = "token", required = true) String cookien,
 			HttpServletRequest request, HttpServletResponse response,
 			@PathVariable(value = Constants.PATH_VARIABLE) long id_telefone) {
 		long id_login;
@@ -161,7 +161,7 @@ public class TelefoneController {
 			return ResponseEntity.status(HttpStatus.OK).body(null);
 		} catch (EmptyException e) {
 			// TODO: handle exception
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
 			// TODO: handle exception
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

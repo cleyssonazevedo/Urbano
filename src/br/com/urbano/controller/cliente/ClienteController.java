@@ -25,6 +25,7 @@ import br.com.urbano.controller.cliente.apoio.TipoCliente;
 import br.com.urbano.controller.cliente.apoio.ValidarApoio;
 import br.com.urbano.exceptions.ConflictException;
 import br.com.urbano.exceptions.UnauthorizedException;
+import br.com.urbano.exceptions.UserAlreadyExistsException;
 import br.com.urbano.modelo.cliente.Fisico;
 import br.com.urbano.modelo.cliente.Juridico;
 
@@ -79,7 +80,7 @@ public class ClienteController {
 				cliente = juridico;
 			}
 
-			return ResponseEntity.ok().body(cliente);
+			return ResponseEntity.status(HttpStatus.OK).body(cliente);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		} finally {
@@ -116,12 +117,15 @@ public class ClienteController {
 								response.sendRedirect(request.getContextPath() + Constants.CLIENTE);
 								return ResponseEntity.created(location).body(null);
 							} else
-								throw new ConflictException();
+								throw new UserAlreadyExistsException();
 						} else
 							return new ResponseEntity<>(HttpStatus.CONFLICT);
-					} catch (ConflictException e) {
+					} catch (UserAlreadyExistsException e) {
 						// TODO: handle exception
 						return new ResponseEntity<>(HttpStatus.CONFLICT);
+					} catch (ConflictException e) {
+						// TODO: handle exception
+						return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 					} catch (Exception e) {
 						// TODO: handle exception
 						e.printStackTrace();
@@ -153,12 +157,15 @@ public class ClienteController {
 								response.sendRedirect(request.getContextPath() + Constants.CLIENTE);
 								return ResponseEntity.created(location).body(null);
 							} else
-								throw new ConflictException();
+								throw new UserAlreadyExistsException();
 						} else
 							return new ResponseEntity<>(HttpStatus.CONFLICT);
-					} catch (ConflictException e) {
+					} catch (UserAlreadyExistsException e) {
 						// TODO: handle exception
 						return new ResponseEntity<>(HttpStatus.CONFLICT);
+					} catch (ConflictException e) {
+						// TODO: handle exception
+						return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 					} catch (Exception e) {
 						// TODO: handle exception
 						e.printStackTrace();

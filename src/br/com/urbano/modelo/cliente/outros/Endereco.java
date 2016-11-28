@@ -50,7 +50,7 @@ public class Endereco {
 	private String pais;
 	@Column(columnDefinition = "CHAR(8) NOT NULL")
 	private String cep;
-	@Column(columnDefinition = "ENUM('RESIDENCIAL', 'COMERCIAL', 'COBRANCA', 'ENTREGA') NOT NULL")
+	@Column(columnDefinition = "ENUM('RESIDENCIAL', 'COMERCIAL', 'OUTRO') NOT NULL")
 	@Enumerated(EnumType.STRING)
 	private TipoEndereco tipoEndereco;
 	@Column(columnDefinition = "VARCHAR(255)")

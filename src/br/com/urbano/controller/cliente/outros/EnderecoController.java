@@ -45,7 +45,7 @@ public class EnderecoController {
 	 * @return
 	 */
 	@RequestMapping(value = Constants.ENDERECO, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	private ResponseEntity<Object> Exibir(@CookieValue(name = "token", required = true) String cookien,
+	private ResponseEntity<Enderecos> Exibir(@CookieValue(name = "token", required = true) String cookien,
 			HttpServletRequest request) {
 		long id_login;
 		// Operações com o cookie
@@ -109,7 +109,7 @@ public class EnderecoController {
 	 * @return
 	 */
 	@RequestMapping(value = Constants.ENDERECO, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	private ResponseEntity<Object> Inserir(@CookieValue(name = "token", required = true) String cookien,
+	private ResponseEntity<Void> Inserir(@CookieValue(name = "token", required = true) String cookien,
 			HttpServletRequest request, HttpServletResponse response, @RequestBody Enderecos enderecos) {
 		long id_login;
 		// Operações com o cookie
@@ -141,7 +141,7 @@ public class EnderecoController {
 	}
 
 	@RequestMapping(value = Constants.ENDERECO_DELETE, method = RequestMethod.DELETE)
-	private ResponseEntity<Object> Excluir(@CookieValue(name = "token", required = true) String cookien,
+	private ResponseEntity<Void> Excluir(@CookieValue(name = "token", required = true) String cookien,
 			HttpServletRequest request, HttpServletResponse response,
 			@PathVariable(value = Constants.PATH_VARIABLE) long id_endereco) {
 		long id_login;
@@ -160,7 +160,7 @@ public class EnderecoController {
 		try {
 			Cliente cliente = (Cliente) clienteDAO.Exibir(id_login);
 			// Isto serve para ver se o ID é do endereco é do mesmo cliente
-			if (outrosDAO.Enderecos(cliente.getId()).size() >= 2) {
+			if (outrosDAO.Enderecos(cliente.getId()).size() >= 1) {
 				Endereco endereco = outrosDAO.Endereco(cliente.getId(), id_endereco);
 				outrosDAO.ExcluirEndereco(endereco.getId());
 
@@ -170,7 +170,7 @@ public class EnderecoController {
 
 		} catch (EmptyException e) {
 			// TODO: handle exception
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
 			// TODO: handle exception
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
