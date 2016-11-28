@@ -1,0 +1,4 @@
+1. planilha de dados
+2. insert de dados
+3. consulta de dados
+4. códigos fonte
