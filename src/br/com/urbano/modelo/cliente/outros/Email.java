@@ -28,7 +28,7 @@ public class Email {
 	private long id;
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_cliente", foreignKey = @ForeignKey(name = "fk_emails"), nullable = false)
+	@JoinColumn(name = "id_cliente", foreignKey = @ForeignKey(name = "fk_email"), nullable = false)
 	private Cliente cliente;
 	@Column(columnDefinition = "VARCHAR(255) NOT NULL")
 	private String email;

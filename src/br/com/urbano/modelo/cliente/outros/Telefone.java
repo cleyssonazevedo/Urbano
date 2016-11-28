@@ -27,7 +27,7 @@ public class Telefone {
 	private long id;
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@ManyToOne
-	@JoinColumn(name = "id_cliente", foreignKey = @ForeignKey(name = "fk_telefones"), nullable = false)
+	@JoinColumn(name = "id_cliente", foreignKey = @ForeignKey(name = "fk_telefone"), nullable = false)
 	private Cliente cliente;
 	@Column(columnDefinition = "CHAR(4) NOT NULL DEFAULT '0055'")
 	private String ddi;

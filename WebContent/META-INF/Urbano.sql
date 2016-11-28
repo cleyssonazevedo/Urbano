@@ -96,13 +96,14 @@ CREATE TABLE Veiculo (
 ) ENGINE=InnoDB;
     
 ALTER TABLE Cliente ADD CONSTRAINT fk_cliente_login FOREIGN KEY (id_login) REFERENCES Login (id) ON DELETE CASCADE;
-ALTER TABLE Email ADD CONSTRAINT fk_emails FOREIGN KEY (id_cliente) REFERENCES Cliente (id) ON DELETE CASCADE;
-ALTER TABLE Endereco ADD CONSTRAINT fk_enderecos FOREIGN KEY (id_cliente) REFERENCES Cliente (id) ON DELETE CASCADE;
+ALTER TABLE Email ADD CONSTRAINT fk_email FOREIGN KEY (id_cliente) REFERENCES Cliente (id) ON DELETE CASCADE;
+ALTER TABLE Endereco ADD CONSTRAINT fk_endereco FOREIGN KEY (id_cliente) REFERENCES Cliente (id) ON DELETE CASCADE;
 ALTER TABLE Fisico ADD CONSTRAINT fk_cliente_fisico FOREIGN KEY (id_cliente) REFERENCES Cliente (id) ON DELETE CASCADE;
 ALTER TABLE Juridico ADD CONSTRAINT fk_cliente_juridico FOREIGN KEY (id_cliente) REFERENCES Cliente (id) ON DELETE CASCADE;
 ALTER TABLE Reservar ADD CONSTRAINT fk_reserva_cliente FOREIGN KEY (id_cliente) REFERENCES Cliente (id) ON DELETE CASCADE;
 ALTER TABLE Reservar ADD CONSTRAINT fk_reserva_veiculo FOREIGN KEY (id_veiculo) REFERENCES Veiculo (id) ON DELETE CASCADE;
-ALTER TABLE Telefone ADD CONSTRAINT fk_telefones FOREIGN KEY (id_cliente) REFERENCES Cliente (id) ON DELETE CASCADE;
+ALTER TABLE Telefone ADD CONSTRAINT fk_telefone FOREIGN KEY (id_cliente) REFERENCES Cliente (id) ON DELETE CASCADE;
+ALTER TABLE Reservar ADD CONSTRAINT ClienteAndVeiculo UNIQUE (id_veiculo, id_cliente);
 
 
 --Motos

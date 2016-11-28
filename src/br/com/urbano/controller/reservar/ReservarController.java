@@ -75,7 +75,7 @@ public class ReservarController {
 		}
 	}
 
-	@RequestMapping(value = Constants.RESERVA_GET, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = Constants.RESERVA_VARIABLE, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseEntity<Object> ListarUm(
 			@CookieValue(name = "token", required = true, defaultValue = "null") String cookien,
 			HttpServletRequest request, @PathVariable(value = Constants.PATH_VARIABLE) long id_reserva) {
@@ -149,6 +149,38 @@ public class ReservarController {
 		} catch (Exception e) {
 			// TODO Erros de execução
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@RequestMapping(value = Constants.RESERVA_VARIABLE, method = RequestMethod.DELETE)
+	private ResponseEntity<Void> Excluir(@PathVariable long id,
+			@CookieValue(value = "token", required = true, defaultValue = "null") String cookien,
+			HttpServletRequest request) {
+		long id_login;
+		// Operações com o cookie
+		try {
+			Cookie cookie = request.getCookies()[request.getCookies().length - 1];
+			id_login = loginDAO.ChecarCookieCompleta(cookie);
+		} catch (NullPointerException e) {
+			// TODO: Cookie não encontrado na máquina, mande relogar ou ativar
+			// os cookies
+			return new ResponseEntity<>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
+		} catch (UnauthorizedException e) {
+			// TODO Tempo de login já encerrado
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+
+		try {
+			Cliente cliente = (Cliente) clienteDAO.Exibir(id_login);
+			reservarDAO.Excluir(id, cliente.getId());
+
+			return ResponseEntity.status(HttpStatus.OK).body(null);
+		} catch (EmptyException e) {
+			// TODO: handle exception
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			// TODO: handle exception
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 

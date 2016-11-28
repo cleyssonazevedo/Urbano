@@ -70,7 +70,7 @@ public class EnderecoController {
 		}
 	}
 
-	@RequestMapping(value = Constants.ENDERECO_GET, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = Constants.ENDERECO_VARIABLE, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseEntity<Endereco> Exibir(@CookieValue(name = "token", required = true) String cookien,
 			HttpServletRequest request, @PathVariable(value = Constants.PATH_VARIABLE) long id_endereco) {
 		long id_login;
@@ -140,7 +140,7 @@ public class EnderecoController {
 		}
 	}
 
-	@RequestMapping(value = Constants.ENDERECO_DELETE, method = RequestMethod.DELETE)
+	@RequestMapping(value = Constants.ENDERECO_VARIABLE, method = RequestMethod.DELETE)
 	private ResponseEntity<Void> Excluir(@CookieValue(name = "token", required = true) String cookien,
 			HttpServletRequest request, HttpServletResponse response,
 			@PathVariable(value = Constants.PATH_VARIABLE) long id_endereco) {

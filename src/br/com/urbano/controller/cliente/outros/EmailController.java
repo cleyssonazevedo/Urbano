@@ -69,7 +69,7 @@ public class EmailController {
 		}
 	}
 
-	@RequestMapping(value = Constants.EMAIL_GET, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = Constants.EMAIL_VARIABLE, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseEntity<Email> Exibir(@CookieValue(name = "token", required = true) String cookien,
 			HttpServletRequest request, @PathVariable(value = Constants.PATH_VARIABLE) long id_email) {
 		long id_login;
@@ -135,7 +135,7 @@ public class EmailController {
 		}
 	}
 
-	@RequestMapping(value = Constants.EMAIL_DELETE, method = RequestMethod.DELETE)
+	@RequestMapping(value = Constants.EMAIL_VARIABLE, method = RequestMethod.DELETE)
 	private ResponseEntity<Object> Excluir(@CookieValue(name = "token", required = true) String cookien,
 			HttpServletRequest request, HttpServletResponse response,
 			@PathVariable(value = Constants.PATH_VARIABLE) long id_email) {

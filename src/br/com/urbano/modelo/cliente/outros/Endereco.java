@@ -31,7 +31,7 @@ public class Endereco {
 	private long id;
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@ManyToOne
-	@JoinColumn(name = "id_cliente", foreignKey = @ForeignKey(name = "fk_enderecos"), nullable = false)
+	@JoinColumn(name = "id_cliente", foreignKey = @ForeignKey(name = "fk_endereco"), nullable = false)
 	public Cliente cliente;
 	@Column(columnDefinition = "VARCHAR(255) NOT NULL")
 	private String logradouro;

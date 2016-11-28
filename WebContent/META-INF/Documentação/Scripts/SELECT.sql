@@ -1,0 +1,28 @@
+USE URBANO;
+
+SELECT * FROM LOGIN;
+SELECT * FROM CLIENTE;
+SELECT * FROM RESERVAR WHERE id_cliente = @id_cliente;
+SELECT * FROM VEICULO GROUP BY preco, id;
+
+SELECT * FROM FISICO WHERE id_cliente = 
+	(SELECT ID FROM CLIENTE WHERE id = @ID AND tipo = 'FISICO');
+SELECT * FROM JURIDICO WHERE id_cliente = 
+	(SELECT ID FROM CLIENTE WHERE id = @ID AND tipo = 'JURIDICO');
+
+SELECT * FROM ENDERECO WHERE id_cliente = 
+	(SELECT ID FROM CLIENTE WHERE id_login = 
+		(SELECT ID FROM LOGIN WHERE usuario = @usuario AND senha = @senha));
+
+SELECT * FROM TELEFONE WHERE id_cliente = 
+	(SELECT ID FROM CLIENTE WHERE id_login = 
+		(SELECT ID FROM LOGIN WHERE usuario = @usuario AND senha = @senha));
+	
+SELECT * FROM EMAIL WHERE id_cliente = 
+	(SELECT ID FROM CLIENTE WHERE id_login = 
+		(SELECT ID FROM LOGIN WHERE usuario = @usuario AND senha = @senha));
+        
+
+/* UPDATE AND DELETE */
+UPDATE LOGIN SET senha = '002' WHERE ID = (SELECT ID FROM LOGIN WHERE usuario = @usuario);
+DELETE FROM LOGIN WHERE ID = (SELECT ID FROM LOGIN WHERE usuario = @usuario);

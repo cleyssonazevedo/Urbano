@@ -35,7 +35,7 @@ public class Cliente {
 
 	@ManyToOne
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	@JoinColumn(name = "id_login", foreignKey = @ForeignKey(name = "fk_cliente_login"), columnDefinition = "INT UNSIGNED NOT NULL UNIQUE")
+	@JoinColumn(name = "id_login", foreignKey = @ForeignKey(name = "fk_login"), columnDefinition = "INT UNSIGNED NOT NULL UNIQUE")
 	private Login login = null;
 	
 	@Column(columnDefinition = "ENUM('Fisico', 'Juridico') NOT NULL")

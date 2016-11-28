@@ -52,7 +52,7 @@ public class VeiculoController {
 		}
 	}
 
-	@RequestMapping(value = Constants.VEICULO_GET, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = Constants.VEICULO_VARIABLE, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseEntity<Veiculo> ExibirUm(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable(value = Constants.PATH_VARIABLE) long id_veiculo) {
 		try {

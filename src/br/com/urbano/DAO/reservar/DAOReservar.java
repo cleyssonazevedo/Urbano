@@ -47,12 +47,13 @@ public class DAOReservar {
 	 * @throws Exception
 	 */
 	@Transactional
-	public void Excluir(Reservar reservar) throws EmptyException, Exception {
+	public void Excluir(long id, long id_cliente) throws EmptyException, Exception {
+		Reservar reservar;
 		try {
 			TypedQuery<Reservar> query = manager.createQuery(
 					"SELECT r FROM Reservar r WHERE ID = :id AND id_cliente = :id_cliente", Reservar.class);
-			query.setParameter("id", reservar.getId());
-			query.setParameter("id_cliente", reservar.getCliente().getId());
+			query.setParameter("id", id);
+			query.setParameter("id_cliente", id_cliente);
 
 			reservar = query.getSingleResult();
 		} catch (Exception e) {
