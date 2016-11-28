@@ -104,14 +104,3 @@ ALTER TABLE Reservar ADD CONSTRAINT fk_reserva_cliente FOREIGN KEY (id_cliente) 
 ALTER TABLE Reservar ADD CONSTRAINT fk_reserva_veiculo FOREIGN KEY (id_veiculo) REFERENCES Veiculo (id) ON DELETE CASCADE;
 ALTER TABLE Telefone ADD CONSTRAINT fk_telefone FOREIGN KEY (id_cliente) REFERENCES Cliente (id) ON DELETE CASCADE;
 ALTER TABLE Reservar ADD CONSTRAINT ClienteAndVeiculo UNIQUE (id_veiculo, id_cliente);
-
-
---Motos
-INSERT INTO Veiculo(chassi, modelo, marca, ano, kilometragem, cor, combustivel, finalPlaca, preco, versao, tipo, numPortas, cambio, detalhes) 
-	VALUES 	('9BWZZZ377VT001928','NX400', 'HONDA', '2001/2002', '89068', 'Preto', 'GASOLINA', '008', '8000.00', 'SPORT', 'MOTO', null, 'MANUAL', '400cc'),
-			('9BWZZZ377VT001921','Iron 883', 'Harley Davidson', '2012/2013', '50002', 'Vermelho', 'GASOLINA', '726', '27800.00', 'CUSTOM', 'MOTO', null, 'MANUAL', '600cc'),
-	 		('9BWZZZ377VT001922','PX', 'HONDA', '2015/2016', '0', 'Branca', 'GASOLINA', '112', '11490.00', 'SCOOTER', 'MOTO', null, 'MANUAL', '150cc'),
-			('9BWZZZ377VT001929','Cbx Twister 250', 'HONDA', '2006/2007', '150726', 'Preto', 'GASOLINA', '008', '5799.99', null, 'MOTO', null, 'MANUAL', '250cc'),
-			('9BWZZZ377VT001920','XTZ 250 Lander', 'YAMAHA', '2010/2011', '275098', 'Azul', 'GASOLINA', '008', '8000.00', 'LANDER', 'MOTO', null, 'MANUAL', '250cc');
-
---Carros
